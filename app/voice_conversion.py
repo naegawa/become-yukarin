@@ -19,7 +19,7 @@ parser.add_argument('-g', '--gpu', type=int)
 args = parser.parse_args()
 
 model_dir = "model/"+args.model+"/"
-input_wave = "data/"+args.input
+input_wave = "data0/"+args.input
 output_dir = "data1/"
 gpu = args.gpu
 
