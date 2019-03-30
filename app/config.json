@@ -1,0 +1,44 @@
+{
+  "dataset": {
+    "features": [
+      "f0",
+      "mfcc"
+    ],
+    "input_glob": "o1/*_000.npy",
+    "input_global_noise": 0.01,
+    "input_local_noise": 0.01,
+    "input_mean_path": "o1/mean.npy",
+    "input_var_path": "o1/var.npy",
+    "num_test": 1,
+    "seed": 0,
+    "target_glob": "o2/*_000.npy",
+    "target_global_noise": 0.01,
+    "target_local_noise": 0.01,
+    "target_mean_path": "o2/mean.npy",
+    "target_var_path": "o2/var.npy",
+    "train_crop_size": 512
+  },
+  "loss": {
+    "adversarial": 1,
+    "mse": 100
+  },
+  "model": {
+    "in_channels": 10,
+    "out_channels": 10,
+    "generator_base_channels": 64,
+    "generator_extensive_layers": 8,
+    "discriminator_base_channels": 32,
+    "discriminator_extensive_layers": 5,
+    "weak_discriminator": false
+  },
+  "project": {
+    "name": "",
+    "tags": []
+  },
+  "train": {
+    "batchsize": 32,
+    "gpu": 0,
+    "log_iteration": 10,
+    "snapshot_iteration": 5000
+  }
+}

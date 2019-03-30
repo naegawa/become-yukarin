@@ -82,9 +82,11 @@ def _namedtuple_to_dict(o: NamedTuple):
 def create_from_json(s: Union[str, Path]):
     try:
         d = json.loads(s)
-    except TypeError:
+    except typeerror:
         d = json.load(open(s))
+    return create_from_dict(d)
 
+def create_from_dict(d):
     backward_compatible(d)
 
     return Config(
