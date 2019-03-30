@@ -9,12 +9,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap styles -->
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!-- Generic page styles -->
-<link rel="stylesheet" href="static/css/style.css">
-<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-<link rel="stylesheet" href="static/css/jquery.fileupload.css">
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <style>
+body {
+  padding-top: 60px;
+}
+.fileinput-button {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  -ms-filter: 'alpha(opacity=0)';
+  font-size: 200px !important;
+  direction: ltr;
+  cursor: pointer;
+}
+
+/* Fixes for IE < 8 */
+@media screen\9 {
+  .fileinput-button input {
+    filter: alpha(opacity=0);
+    font-size: 100%;
+    height: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -31,6 +55,8 @@
 		<i class="glyphicon glyphicon-plus"></i>
 		<span>Upload model</span>
 		<input id="modelupload" type="file" name="files[]" multiple>
+	</span>
+	<span id="info_area">		
 	</span>
 	<br>
 	<br>
@@ -53,9 +79,6 @@
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> 
-<script src="static/js/vendor/jquery.ui.widget.js"></script>
-<script src="static/js/jquery.iframe-transport.js"></script>
-<script src="static/js/jquery.fileupload.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
 /*jslint unparam: true */
@@ -123,7 +146,8 @@ $(function () {
 				return XHR;
 			}
 		}).done(function( data ) {
-			console.log(data)
+			console.log(data);
+			update_list();
 		});
 	});
 
@@ -140,8 +164,17 @@ $(function () {
 		height: 300,
        		width: 450,
 	});
+	function download(uri, filename) {
+		filename = filename || 'file';
+		var link = document.createElement('a');
+		link.download = filename;
+		link.href = uri;
+		link.click();
+	}
+
 	$('#button_run').on('click', function() {
-		$.getJSON('/run/sim?wid='+target_wid).done(
+		var model_name=$( "#info_model_file" ).val()
+		$.getJSON('/run/sim?wid='+target_wid+'&model='+model_name).done(
 		function(data){
 			console.log(data);
 			$( "#dialog" ).dialog( "open" );
@@ -149,7 +182,9 @@ $(function () {
 				$.getJSON('/status/'+target_wid).done(
 				function(data){
 					console.log(data);
-					$("#dialog_log").text(data["log"])
+					if(data["log"]){
+						$("#dialog_log").text(data["log"].join("\r\n"))
+					}
 					var psconsole = $('#dialog_log');
 					psconsole.scrollTop(
 						psconsole[0].scrollHeight - psconsole.height()
@@ -158,7 +193,8 @@ $(function () {
 						clearInterval(id);
 						$( "#dialog" ).dialog( "close" );
 						if(data["file"]){
-							location.href=data["file"]
+							//location.href=data["file"]
+							download(data["file"], target_wid+".wav");
 						}
 					}
 				}).fail(function(err){
@@ -172,6 +208,8 @@ $(function () {
 	$('#button_status').on('click', function() {
 		check_status();
 	});
+	var list_model=null;
+	var list_wav=null;
 	function update_list(){
 		$.getJSON('/list/wav').done(
 			function(data){
@@ -180,9 +218,10 @@ $(function () {
 			}).fail(function(err){
 				console.log(err);
 			})
-		$.getJSON('/list/tf').done(
+		$.getJSON('/list/model').done(
 			function(data){
-				list_tf=data;
+				list_model=data;
+				update_model_info();
 				console.log(data);
 			}).fail(function(err){
 				console.log(err);
@@ -201,6 +240,16 @@ $(function () {
 		downLoadLink.click();
 	})
 	
+
+	function update_model_info(){
+		$("#info_area").empty()
+		var t ='<select id="info_model_file" name="models"></select>';
+		$("#info_area").append(t);
+		$.each(list_model,function(i,el){
+			$("#info_area #info_model_file").append("<option>"+el+"</option>");
+		})
+	}
+	update_list();
 });
 </script>
 </body>

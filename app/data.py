@@ -1,5 +1,5 @@
 # data.py
 from flask import Blueprint
-app = Blueprint("data", __name__,
-    static_url_path='/data', static_folder='./data'
+app = Blueprint("data2", __name__,
+    static_url_path='/data2', static_folder='./data2'
 )

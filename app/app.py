@@ -38,11 +38,16 @@ def index():
 
 @app.route('/run/sim', methods=['GET','POST'])
 def post_run_sim():
+	model_name="kojima"
 	if request.method == 'POST':
 		wid=request.form["wid"]
+		if "model" in request.form:
+			model_name=request.form["model"]
 	else:
 		wid=request.args.get('wid')
-	p = subprocess.Popen(['sh', 'run.app.sh',wid])
+		if request.args.get('model') is not None:
+			model_name=request.args.get('model')
+	p = subprocess.Popen(['sh', 'run.app.sh',wid,model_name])
 	worker[wid]={"process":p,"setting":[]}
 	return make_response(jsonify({'worker_id':wid}))
 
@@ -89,8 +94,11 @@ def list_wav():
 	return make_response(jsonify(l))
 
 @app.route('/list/model', methods=['GET'])
-def list_tf():
-	l=glob.glob(UPLOAD_MODEL_DIR+"*.zip")
+def list_model():
+	l=[]
+	for filename in glob.glob(UPLOAD_MODEL_DIR+"*"):
+		if os.path.isdir(filename):
+			l.append(os.path.basename(filename))
 	return make_response(jsonify(l))
 
 if __name__ == '__main__':
