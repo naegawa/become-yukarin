@@ -53,8 +53,6 @@ def post_wav_up():
 	if 'files[]' in request.files:
 		file = request.files['files[]']
 		fileName = file.filename
-		#if '' == fileName:
-		#	make_response(jsonify({'result':'filename must not empty.'}))
 		wid=calculate_key(fileName)
 		file.save(os.path.join(UPLOAD_WAV_DIR, wid+".wav"))
 		return make_response(jsonify({'result':wid}))
@@ -66,12 +64,11 @@ def post_tf_up():
 	if 'files[]' in request.files:
 		make_response(jsonify({'result':'uploadFile is required.'}))
 		file = request.files['files[]']
-		fileName = file.filename
-		if '' == fileName:
-			make_response(jsonify({'result':'filename must not empty.'}))
-		saveFileName = datetime.now().strftime("%Y%m%d_%H%M%S_") + werkzeug.utils.secure_filename(fileName)
+		saveFileName = werkzeug.utils.secure_filename(file.filename)
 		file.save(os.path.join(UPLOAD_MODEL_DIR, saveFileName))
-		return make_response(jsonify({'result':'upload OK.'}))
+		model_name,_=os.path.splitext(os.path.basename(saveFileName))
+		subprocess.Popen(['sh', 'run.update_model.sh',model_name])
+		return make_response(jsonify({'result':model_name}))
 
 @app.route('/status/<wid>', methods=['GET'])
 def status(wid=None):
