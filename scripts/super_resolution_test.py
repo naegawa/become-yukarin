@@ -19,10 +19,12 @@ parser.add_argument('-md', '--model_directory', type=Path, default=Path('/mnt/dw
 parser.add_argument('-iwd', '--input_wave_directory', type=Path,
                     default=Path('/mnt/dwango/hiroshiba/become-yukarin/dataset/yukari-wave/yukari-news/'))
 parser.add_argument('-g', '--gpu', type=int)
+parser.add_argument('-it', '--iteration', type=int)
 args = parser.parse_args()
 
 model_directory = args.model_directory  # type: Path
 input_wave_directory = args.input_wave_directory  # type: Path
+it = args.iteration
 gpu = args.gpu
 
 paths_test = list(Path('./test_data_sr/').glob('*.wav'))
@@ -52,7 +54,7 @@ def process(p: Path, super_resolution: SuperResolution):
             p = Path(p)
         input = acoustic_feature_process(wave_process(str(p)))
         wave = super_resolution(input.spectrogram, acoustic_feature=input, sampling_rate=param.voice_param.sample_rate)
-        librosa.output.write_wav(str(output / p.stem) + '.wav', wave.wave, wave.sampling_rate, norm=True)
+        librosa.output.write_wav(str(output / p.stem) +"-"+str(it)+ '.wav', wave.wave, wave.sampling_rate, norm=True)
     except:
         import traceback
         print('error!', str(p))
@@ -68,8 +70,11 @@ for model_name in args.model_names:
     path_train = input_paths[0]
     path_test = input_paths[-1]
 
-    model_paths = base_model.glob('predictor*.npz')
-    model_path = list(sorted(model_paths, key=extract_number))[-1]
+    if it:
+        model_path = base_model / ("predictor_"+str(it)+".npz")
+    else:
+        model_paths = base_model.glob('predictor*.npz')
+        model_path = list(sorted(model_paths, key=extract_number))[-1]
     print(model_path)
     super_resolution = SuperResolution(config, model_path, gpu=gpu)
 

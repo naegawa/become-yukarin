@@ -78,6 +78,7 @@ ext = extensions.snapshot_object(predictor, filename='predictor_{.updater.iterat
 trainer.extend(ext, trigger=trigger_snapshot)
 
 trainer.extend(extensions.LogReport(trigger=trigger_log))
+trainer.extend(extensions.PrintReport(['epoch','train/predictor/loss', 'train/discriminator/loss', 'test/predictor/loss', 'test/discriminator/loss', 'elapsed_time']))
 
-save_args(arguments, arguments.output)
+#save_args(arguments, arguments.output)
 trainer.run()

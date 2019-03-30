@@ -80,5 +80,5 @@ trainer.extend(ext, trigger=trigger_snapshot)
 trainer.extend(extensions.LogReport(trigger=trigger_log))
 trainer.extend(extensions.PrintReport(['predictor/loss']))
 
-save_args(arguments, arguments.output)
+#save_args(arguments, arguments.output)
 trainer.run()

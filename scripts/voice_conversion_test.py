@@ -36,10 +36,11 @@ def extract_number(f):
 def process(p: Path, acoustic_converter: AcousticConverter):
     try:
         if p.suffix in ['.npy', '.npz']:
+            print(str(input_wave_directory / p.stem))
             fn = glob.glob(str(input_wave_directory / p.stem) + '.*')[0]
             p = Path(fn)
         wave = acoustic_converter(p)
-        librosa.output.write_wav(str(output / p.stem) + '.wav', wave.wave, wave.sampling_rate, norm=True)
+        librosa.output.write_wav(str(output / p.stem) +str(it)+ '.wav', wave.wave, wave.sampling_rate, norm=True)
     except:
         import traceback
         print('error!', str(p))
@@ -66,7 +67,9 @@ for model_name in args.model_names:
     output = Path('./output').absolute() / base_model.name
     output.mkdir(exist_ok=True)
 
-    paths = [path_train, path_test] + paths_test
+    #paths = [path_train, path_test] + paths_test
+    paths = paths_test
+    print(paths)
 
     process_partial = partial(process, acoustic_converter=acoustic_converter)
     if gpu is None:

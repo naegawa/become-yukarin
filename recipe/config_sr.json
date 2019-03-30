@@ -1,6 +1,6 @@
 {
   "dataset": {
-    "input_glob": "/yukari-news-harvest/yukari-news-*.npy",
+    "input_glob": "o3/*.npy",
     "num_test": 5,
     "input_global_noise": 3,
     "input_local_noise": 3,
@@ -24,7 +24,7 @@
   },
   "train": {
     "batchsize": 8,
-    "gpu": -1,
+    "gpu": 0,
     "log_iteration": 250,
     "snapshot_iteration": 5000
   }
