@@ -18,7 +18,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -
     ln -s ${CONDA_ROOT}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". ${CONDA_ROOT}/etc/profile.d/conda.sh" >> ~/.bashrc 
 
-pip install librosa numpy chainer pysptk fastdtw pyworld matplotlib chainerui
+RUN pip install librosa numpy chainer pysptk fastdtw pyworld matplotlib chainerui
 RUN git clone https://github.com/yamachu/WORLD4py && cd WORLD4py && python setup.py install
 
 RUN git clone https://github.com/naegawa/become-yukarin.git
