@@ -4,7 +4,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y wget bzip2 curl git lsb-release gnupg sudo nginx
+    apt-get install -y wget bzip2 curl git lsb-release gnupg sudo nginx sox
 RUN mkdir -p /usr/yukari
 WORKDIR /usr/yukari
 
