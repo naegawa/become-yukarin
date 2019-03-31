@@ -27,6 +27,7 @@ def process(acoustic_converter: AcousticConverter):
 	try:
 		wave = acoustic_converter(Path(input_wave))
 		base_wave=os.path.basename(input_wave)
+		print(wave.wave)
 		librosa.output.write_wav(output_dir+base_wave, wave.wave, wave.sampling_rate, norm=True)
 	except:
 		import traceback
