@@ -9,7 +9,7 @@ RUN mkdir -p /usr/yukari
 WORKDIR /usr/yukari
 
 ENV CONDA_ROOT /root/miniconda
-ENV PYTHONPATH /usr/yukari/
+ENV PYTHONPATH /usr/yukari/become-yukarin
 ENV PATH /root/miniconda/bin:$PATH
 SHELL ["/bin/bash", "-c"]
 
